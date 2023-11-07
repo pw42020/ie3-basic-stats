@@ -15,6 +15,8 @@ Why does the described automated testing infrastructure not catch the defect?
 
 **Answer**
 
+The automated testing does not does not notify the developers because of a logical conflict between the JUnit test and the cron infrastructure. The JUnit tests do in fact fail in the frequent cron testing, but in the event of a test failure the program does not halt/exit early. However, in the cron specifications it only notifies the developers in the event of an exit code ≠ 0. So the developers are not notified because the test fails, but with normal exit code 0.
+
 ### Question 2
 
 **Question**
