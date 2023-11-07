@@ -56,6 +56,26 @@ Based on the git bisect results, which commit (commit hash and log message) intr
 
 **Answer**
 
+Through the git bisect results, the commit that introduced the defect was
+
+```sh
+f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f is the first bad commit
+commit f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f
+Author: DeveloperTommy <its.tommy.nguyen@gmail.com>
+Date:   Mon Sep 26 23:58:11 2016 -0400
+
+    Commented and cleaned up the source code
+
+ src/BasicStats.java | 19 ++++++++++++-------
+ src/Controller.java |  2 +-
+ src/ModeView.java   |  1 -
+ src/Model.java      |  1 +
+ src/ResetCtrl.java  |  1 -
+ 5 files changed, 14 insertions(+), 10 deletions(-)
+```
+
+Another way I verified that this commit is the bad commit is through going to the commit before this commit manually and running `ant test`. And sure enough, the test suite was successful with no errors.
+
 ### Question 5
 
 **Question**
@@ -63,6 +83,18 @@ Based on the git bisect results, which commit (commit hash and log message) intr
 In interactive mode in git bisect, after how many steps (git bisect calls) did you identify the defect-inducing commit?
 
 **Answer**
+
+Through the interactive mode `git bisect`, it took five stesp to identify the defect-inducing commit.
+
+The command `git bisect` uses Binary Search to find the bad commit, and we went to commits:
+
+1. `ea570cf8b3bef806bd771d61a738f30f940f4a3a`
+2. `6462c91631b264a2e6b252335fe77bc3ca14d268`
+3. `c18d700010bf84ac4bd301e7aabf7e438d0744c0`
+4. `f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f`
+5. `bda5f0214b51f6cb77e00a7869f32119dadddb47`
+
+which finally landed us upon the commit `f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f` as the first bad commit. 
 
 ### Question 6
 
