@@ -25,6 +25,12 @@ How could the developers improve the testing infrastructure (either manual or au
 
 **Answer**
 
+One option that depends on the capability of the cron infrastructure is to instead of reporting when an error resulting in an exit code happens, to instead have cron report when any test fails regardless of it creates a nonzero exit code. However, I'm not familiar with cron, so I don't know how easy this would be or if it is even possible.
+
+The developers could also change the JUnit test to generate a nonzero exit code when any test fails so that the cron job is able to catch the error and notify the developers.
+
+A more manual option would be able to have the developers manually check the unit tests in some development interval, so that there are human eyes on the tests which can detect any anomalies better than a mindless computer program.
+
 ### Question 3
 
 **Question**
