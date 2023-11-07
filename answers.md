@@ -31,6 +31,15 @@ For git bisect, how many commits exist between v1.0.0 and the HEAD revisions (in
 
 **Answer**
 
+To determine the amount of commits between `v1.0.0` and `master`, I used the command
+
+```sh
+git rev-list --left-right --count master...v1.0.0
+```
+
+which returned the fact that master is 36 commits ahead
+of branch v1.0.0 and 0 commits behind.
+
 ### Question 4
 
 **Question**
