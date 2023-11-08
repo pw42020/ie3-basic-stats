@@ -118,3 +118,23 @@ git bisect run ⟨cmd⟩
 
 **Answer**
 
+The total commands are:
+
+```sh
+git bisect start HEAD v1.0.0
+git bisect run sh -c ./script.sh
+```
+
+and `script.sh` is
+
+```sh
+#!/bin/bash
+ant clean
+ant compile
+ant test 2> temp.txt
+OUTPUT="$(grep -c 'Test [A-Za-z0-9]* FAILED' temp.txt)"
+rm temp.txt
+exit $OUTPUT
+```
+
+This script takes the error output of the ant test and checks if the program has stated that the test has failed. It then returns the count of the failures received. This means that if the count is over 0, the program will instantly choose `git bisect bad`. If there is no count, the program will choose `git bisect good`.
