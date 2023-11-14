@@ -56,30 +56,25 @@ Based on the git bisect results, which commit (commit hash and log message) intr
 
 **Answer**
 
-The following commit introduced the bug:
+Through the git bisect results, the commit that introduced the defect was
 
-	commit f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f
-	Author: DeveloperTommy <its.tommy.nguyen@gmail.com>
-	Date:   Mon Sep 26 23:58:11 2016 -0400
-	Commented and cleaned up the source code
-	src/BasicStats.java | 19 ++++++++++++-------
-	src/Controller.java |  2 +-
-	src/ModeView.java   |  1 -
-	src/Model.java      |  1 +
-	src/ResetCtrl.java  |  1 -
-5 files changed, 14 insertions(+), 10 deletions(-)
+```sh
+f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f is the first bad commit
+commit f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f
+Author: DeveloperTommy <its.tommy.nguyen@gmail.com>
+Date:   Mon Sep 26 23:58:11 2016 -0400
 
-After using git bisect and ant compile test to determine whether a commit passed all of the tests, I then use the command
-	
-	git diff HEAD^ -- src/BasicStats.java
+    Commented and cleaned up the source code
 
-to see the difference from the file that was most changed. After reviewing the code I could see that the chagnes made primarily were changing the names of variables, but in doing so also accidentally changed another variable.
+ src/BasicStats.java | 19 ++++++++++++-------
+ src/Controller.java |  2 +-
+ src/ModeView.java   |  1 -
+ src/Model.java      |  1 +
+ src/ResetCtrl.java  |  1 -
+ 5 files changed, 14 insertions(+), 10 deletions(-)
+```
 
-	for (int j = 1; j < (n - i); j++) {
-
-	for (int j = 1; j < (size - j); j++) {
-
-In changing the variable name n to size, they also changed i to j, which affected when the nested loop terminates. I updated the values and saw the tests passed and used this to verify that in this commit in this line of code caused the error.
+Another way I verified that this commit is the bad commit is through going to the commit before this commit manually and running `ant test`. And sure enough, the test suite was successful with no errors.
 
 ### Question 5
 
@@ -89,23 +84,17 @@ In interactive mode in git bisect, after how many steps (git bisect calls) did y
 
 **Answer**
 
-I started with the inital git bisect bad and git bisect good v1.0.0., then used
+Through the interactive mode `git bisect`, it took five stesp to identify the defect-inducing commit.
 
-git bisect bad
+The command `git bisect` uses Binary Search to find the bad commit, and we went to commits:
 
-git bisect bad
+1. `ea570cf8b3bef806bd771d61a738f30f940f4a3a`
+2. `6462c91631b264a2e6b252335fe77bc3ca14d268`
+3. `c18d700010bf84ac4bd301e7aabf7e438d0744c0`
+4. `f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f`
+5. `bda5f0214b51f6cb77e00a7869f32119dadddb47`
 
-git bisect good
-
-git bisect bad
-
-git bisect bad
-
-git bisect bad
-
-so after 6 steps the git bisect tool identified the commit that caused the test failure.
-
-In our git repo we personally made our own commits to the answer.md file in the repo, so there may have been an extra step in the git bisect that was used to check for the extra commits.
+which finally landed us upon the commit `f7f175dc8bc5b3693f99b2f8e799b51c0d0d9b9f` as the first bad commit. 
 
 ### Question 6
 
@@ -135,3 +124,23 @@ git bisect run ⟨cmd⟩
 
 **Answer**
 
+The total commands are:
+
+```sh
+git bisect start HEAD v1.0.0
+git bisect run sh -c ./script.sh
+```
+
+and `script.sh` is
+
+```sh
+#!/bin/bash
+ant clean
+ant compile
+ant test 2> temp.txt
+OUTPUT="$(grep -c 'Test [A-Za-z0-9]* FAILED' temp.txt)"
+rm temp.txt
+exit $OUTPUT
+```
+
+This script takes the error output of the ant test and checks if the program has stated that the test has failed. It then returns the count of the failures received. This means that if the count is over 0, the program will instantly choose `git bisect bad`. If there is no count, the program will choose `git bisect good`.
