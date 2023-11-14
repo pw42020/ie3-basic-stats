@@ -4,10 +4,9 @@ import java.util.Collections;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-
 public class ModeView implements View {
 
-  //Instance variables
+  // Instance variables
   double mode;
   JTextField jtfMode;
   String name;
@@ -23,7 +22,7 @@ public class ModeView implements View {
   public void update(ArrayList<Double> numbers) {
     mode = BasicStats.mode(BasicStats.getArrayDouble(numbers));
 
-    //Set text
+    // Set text
     jtfMode.setText("" + mode);
 
   }
@@ -40,14 +39,11 @@ public class ModeView implements View {
 
   @Override
   public String getName() {
-		return name;
-	}
+    return name;
+  }
 
-	public double getMode() {
-		return mode;
-	}
-
-
-
+  public double getMode() {
+    return mode;
+  }
 
 }
